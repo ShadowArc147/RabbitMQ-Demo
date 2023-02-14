@@ -1,0 +1,59 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: rabbitmq-python
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rabbitmq
+  namespace: rabbitmq-python
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rabbitmq
+  template:
+    metadata:
+      labels:
+        app: rabbitmq
+    spec:
+      containers:
+        - name: rabbitmq
+          image: rabbitmq:3.8.9-management
+          ports:
+            - containerPort: 5672
+            - containerPort: 15672
+          env:
+            - name: RABBITMQ_DEFAULT_USER
+              value: guest
+            - name: RABBITMQ_DEFAULT_PASS
+              value: guest
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: python-script
+  namespace: rabbitmq-python
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: python-script
+  template:
+    metadata:
+      labels:
+        app: python-script
+    spec:
+      containers:
+        - name: python-script
+          image: your-python-script:latest
+          ports:
+            - containerPort: 80
+          env:
+            - name: RABBITMQ_HOST
+              value: rabbitmq
+            - name: RABBITMQ_PORT
+              value: "5672"
