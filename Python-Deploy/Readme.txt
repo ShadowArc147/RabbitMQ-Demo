@@ -1,0 +1,1 @@
+This YAML file defines an Argo CD application that deploys a Python service using a Docker image. It includes information on the source code repository, the Kubernetes cluster, and the container image. You can customize the YAML to match the requirements of your specific Python service.
