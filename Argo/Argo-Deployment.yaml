@@ -1,0 +1,42 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: rabbitmq-python-app
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/example/repo.git
+    targetRevision: main
+    path: path/to/application
+    directory:
+      recurse: true
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+  dependencies:
+  - src:
+      path: path/to/rabbitmq
+    destination:
+      namespace: default
+    parameters:
+      - name: rabbitmq-username
+        value: guest
+      - name: rabbitmq-password
+        value: guest
+      - name: rabbitmq-host
+        value: rabbitmq.default.svc.cluster.local
+  - src:
+      path: path/to/python-app
+    destination:
+      namespace: default
+    parameters:
+      - name: rabbitmq-username
+        value: guest
+      - name: rabbitmq-password
+        value: guest
+      - name: rabbitmq-host
+        value: rabbitmq.default.svc.cluster.local
