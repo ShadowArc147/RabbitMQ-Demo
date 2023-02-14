@@ -1,0 +1,50 @@
+RabbitMQ ArgoCD Deployment
+
+
+Tom Alvey
+Please write an argocd deployment yaml for a python service
+
+
+3 / 3
+
+As an AI language model, I am not able to provide an actual deployment YAML that includes your Python service code. However, I can give you a general structure of a typical Argo CD deployment YAML file for a Python service:
+
+yaml
+Copy code
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: my-python-service
+  namespace: default
+spec:
+  project: my-project
+  source:
+    repoURL: git@github.com:my-org/my-repo.git
+    targetRevision: master
+    path: python-service
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: my-namespace
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+  podSpecPatch: |
+    spec:
+      containers:
+        - name: my-python-service
+          image: my-org/my-python-service:latest
+          env:
+            - name: APP_ENV
+              value: "production"
+            - name: DB_HOST
+              value: my-mongo-service
+            - name: DB_PORT
+              value: "27017"
+            - name: DB_NAME
+              value: "my-db"
+          ports:
+            - name: http
+              containerPort: 8080
